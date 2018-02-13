@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1;">
+<head><title>Tea Clicker</title>
+<script src="jquery-2.1.4.min.js"></script>
+<script src='https://cdn1.kongregate.com/javascripts/kongregate_api.js'></script>
+<script src='thecode.js'></script>
+<link rel="icon" href="images/icon.ico">
+</head>
+<body style="margin:0px;">
+<div id = "GAMEDIV" width = '800px' height = '500px'style="background-color:#F5F5F5">
+	<div id = "left"><!--  Buildings, -->
+		<div style="font-family: 'Nirmala UI Semilight';font-size: 28px">Buildings</div>
+		<div id = "buildingHolder"></div>
+		<div id = "descPopup"></div>
+		<div id= "statsButton" style="background-image:url(images/statsButton.jpg);width:250px;height:50px;position:absolute;bottom:0px;left:-1px;z-index:1;cursor:pointer;"></div>
+	</div>
+	<div id = "central"height='500px'><!--  Tea cup, counters  -->
+		<div id = "txtParticles"
+			style = "cursor: pointer; display:block; position:absolute;"></div>
+		<div id="teacounter" style="font-family: 'Nirmala UI Semilight';font-size: 36px"></div>
+		<div id="tpsDisplay" style="font-family: 'Nirmala UI Semilight';font-size: 24px"></div>
+		<br>
+		<img id = "theCup" src="images/teaCup.png" style ="display:none;position=absolute;cursor:pointer;" alt="Tea Cup" height="240" width="240" >
+		<div id = "softResetButton" style ="background-image:url(images/softResetButton.png);width:269px;height:50px;position:absolute;bottom:50px;left:0px;z-index:1;cursor:pointer;display:none;"></div> 
+		<div id = "achievementButton" style="background-image:url(images/achievementsButton.jpg);width:269px;height:50px;position:absolute;bottom:0px;left:0px;z-index:1;cursor:pointer"></div>
+	</div>
+	<div id = "right"> <!-- Upgrades, -->
+		<div style="font-family: 'Nirmala UI Semilight';font-size: 28px">Upgrades</div>
+		<div id = "upgradeHolder"></div>
+		<div id = "settingsButton" style="background-image:url(images/settingsButton.jpg);width:264px;height:50px;position:absolute;bottom:0px;left:0px;z-index:1;cursor:pointer"></div>
+	</div>
+	<div id = "descUPopup"></div>
+	<div id = "achieveDescPopup"></div>
+	<div id = "achievePopup" style="cursor:pointer;display:none;text-align:center;font-family:'Nirmala UI Semilight';font-size: 30px;font-color:'#332B38';width:500px;height:120px;background-image:url(images/achievementPopup.jpg);position:absolute;left:150px;"></div>
+	<div id = "windowPopup">
+		<div id="windowCloseButton"></div>
+		<div id="windowContent"></div>
+	</div>
+</div>
+<style>
+	#GAMEDIV{
+		width:790px;
+		height:500px;
+		background-color:white;
+		border-style: solid;
+		border-width: 5px;
+		position:fixed;
+		-moz-user-select: none; -webkit-user-select: none;-ms-user-select: none; user-select: none;-webkit-user-drag: none; user-drag: none;
+	}
+	#left{
+		text-align:center;
+		width:250px;
+		height:500px;
+		border-style: solid;
+		border-width: 3px;
+		border-color: gray;
+		position:absolute;
+		left: 0px;
+		top: -3px;
+		z-index=1;
+	}
+	#right{
+		overflow-x: visible;
+		overflow-y: auto;
+		text-align:center;
+		width:264px;
+		height:500px;
+		border-style: solid;
+		border-width: 3px;
+		border-color: gray;
+		position:absolute;
+		right: 0px;
+		top: -3px;
+		z-index=1;
+	}
+	#central{
+		text-align:center;
+		width:270px;
+		height:500px;
+		border-style: solid;
+		border-width: 3px;
+		border-color: gray;
+		position:relative;
+		left: 250px;
+		top: -3px;
+		z-index=0;
+	}
+	.buildings{
+		position:absolute;
+		width:250px;height:50px;
+		left:-1px;
+		cursor:pointer;
+	}
+	.buildingNames{
+		pointer-events: none;
+		cursor:default;
+		position:absolute;
+		font-family: 'Baskerville Old Face';
+		font-size: 24px;
+		top: 2px;
+		left: 53px;
+		cursor:inherit;
+	}
+	.buildingNumbers{
+		pointer-events: none;
+		cursor:default;
+		position:absolute;
+		font-family: 'Nirmala UI Semilight';
+		font-size: 36px;
+		top: 5px;
+		right: 3px;
+		cursor:inherit;
+	}
+	.buildingCosts{
+		pointer-events: none;
+		cursor:default;
+		position:absolute;
+		font-family: 'Nirmala UI Semilight';
+		font-size: 18px;
+		bottom: 2px;
+		left: 55px;
+		cursor:inherit;
+	}
+	#descPopup{
+		position:absolute;
+		display: none;
+		z-index: 2;
+		font-family: 'Nirmala UI Semilight';
+		font-size: 18px;
+		width: 300px;
+		height: 120px;
+		left: 250px;
+		background-image: url(images/desc.png);
+		opacity: 0.9;
+	}
+	.description{
+		font-family: 'Nirmala UI Semilight';
+		position:absolute;
+	}
+	#descName{
+		top: 3px;
+		left: 20px;
+		font-size: 18px;
+	}
+	#descDesc{
+		font-size: 14px;
+		font-style: italic;
+		font-color: '#57735A';
+		text-align: left;
+		width: 170px;
+		bottom: 40px;
+		left: 17px;
+	}
+	#descStats{
+		text-align: right;
+		font-size: 12px;
+		width: 116px;
+		right: 10px;
+		bottom: 6px;
+	}
+	.ma{
+		position:relative;
+		cursor:inherit;
+		top:11px;
+	}
+	#upgradeHolder{
+		height:300px;
+		width:240px;
+		position:absolute;
+	}
+	#descUName{
+		top: 3px;
+		left: 7px;
+		font-size: 24px;
+	}
+	#descUDesc{
+		top:28px;
+		left:7px;
+		width:280px;
+		font-size: 18px;
+		font-style: italic;
+		font-color: '#57735A';
+		text-align: left;
+	}
+	#descUCost{
+		bottom:19px;
+		right:15px;
+		font-size: 20px;
+		text-align: right;
+	}
+	#descEffect{
+		bottom:5px;
+		left:7px;
+		font-size: 18px;
+		font-color: '#57735A';
+		text-align: left;
+	}
+	#descUPopup{
+		position:absolute;
+		pointer-events:none;
+		display: none;
+		z-index: 3;
+		font-family: 'Nirmala UI Semilight';
+		font-size: 18px;
+		width: 300px;
+		height: 120px;
+		background-image: url(images/descR.png);
+		opacity: 0.95;
+	}
+	.addedTeaTextParticle{
+		position:absolute;
+		font-weight:bold;
+		width:100px;
+		z-index:2;
+	}
+	#windowPopup{
+		width: 700px;
+		height:420px;
+		position:absolute;
+		left:50px;
+		top:40px;
+		z-index:3;
+		background-image: url(images/window.png);
+		display:none;
+	}
+	#windowCloseButton{
+		width:29px;
+		height:29px;
+		position:absolute;
+		top:0px;
+		right:0px;
+		z-index:5;
+		background-image: url(images/closeButton.png);
+		cursor:pointer;
+	}
+	#windowContent{
+		width:680px;
+		height:400px;
+		position:absolute;
+		top:15px;
+		left:5px;
+		z-index:4;
+		cursor:default;
+		font-family:'Nirmala UI Semilight';
+		overflow-y:auto;
+	}
+	#achieveDescPopup{
+		position:absolute;
+		pointer-events:none;
+		display: none;
+		z-index: 4;
+		font-family: 'Nirmala UI Semilight';
+		font-size: 18px;
+		width: 289px;
+		height: 74px;
+		background-image: url(images/descA.png);
+		opacity: 0.95;
+	}
+</style>
+</body>
+</html>
